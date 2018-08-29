@@ -1,29 +1,29 @@
+// Prime Number Checker
+// By Joseph Edusei
 #include <iostream>
+#include <cmath>
+
 using namespace std;
 
 bool isPrime(int number) {
-    if (number < 2) return false;
-    if (number == 2 || number == 3 || number == 5 || number == 7 || number == 13)
-        return true;
-        
-    if (number % 2 != 0) {
-        if (number % 3 != 0) {
-            if (number % 5 != 0) {
-                if (number % 7 != 0) {
-                    if (number % 13 != 0)
-                        return true;
-              }
-          }
-      }
-  }
-  return false;
+    if (number < 2) // All integers below 2 are non-prime
+        return false;
+
+    // Check every number from 2 to the square root of the number and see if any divides the number without a remainder
+    int root = (int)sqrt(number);
+    for (int i = 2; i <= root; i++) { 
+        if (number % i == 0)
+            return false;
+    }
+    
+    return true;
 }
 
 int main () {
     int num;
     cout << "Please enter an integer: ";
     cin >> num;
-    if (isPrime(num))
+    if (isPrime(num)) // Number is prime
         cout << num << " is a prime number." << endl;
     else 
         cout << num << " is not a prime number." << endl;
