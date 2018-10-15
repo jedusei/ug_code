@@ -80,9 +80,9 @@ void StoreData()
     for (int i = 0; i < 5; i++)
     {
         Student s = students[i];
-        file << setfill('0') << setw(8) << s.id << "  ";
-        file << s.name << "  " << s.age << " ";
-        file << s.gender << "  " << s.score << " ";
+        file << setfill('0') << setw(8) << s.id << "\t";
+        file << s.name << "\t" << s.age << "\t";
+        file << s.gender << "\t" << s.score << "\t";
         file << s.grade << endl;
     }
 
