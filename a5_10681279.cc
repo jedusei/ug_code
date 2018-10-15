@@ -47,7 +47,7 @@ void ReceiveInput()
         cin >> s.name;
         cout << "Age: ";
         cin >> s.age;
-        cout << "Gender: ";
+        cout << "Gender (M/F): ";
         cin >> s.gender;
         cout << "Score: ";
         cin >> s.score;
@@ -86,7 +86,7 @@ void StoreData()
         file << s.grade << endl;
     }
 
-    file << endl;
+    file << "*********************************************" << endl << endl;
     file << "Average Age: " << avgAge << endl;
     file << "Average Score: " << avgScore << endl;
     file << "Male Count: " << maleCount << endl;
