@@ -34,6 +34,8 @@ int main()
 
 void ReceiveInput()
 {
+    cout << "Please enter the student details below:" << endl
+         << endl;
     for (int i = 0; i < 5; i++)
     {
         Student s;
