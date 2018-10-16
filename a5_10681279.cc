@@ -66,7 +66,7 @@ void ReceiveInput()
         cout << "ID: ";
         cin >> s.id;
         cout << "Name: ";
-        getline(cin, s.name);
+        cin >> s.name;
         cout << "Age: ";
         cin >> s.age;
         cout << "Gender (M/F): ";
