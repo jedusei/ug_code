@@ -18,7 +18,7 @@ struct Course
     string title; // Course title
     int credits;  // Number of credit hours
 
-    // Returns "CourseCode - CourseTitle"
+    // Returns "Code - Title"
     char *ToString()
     {
         int n = sprintf(stringBuffer, "%s - %s", code.c_str(), title.c_str());
@@ -37,7 +37,7 @@ struct Student
     int level;
 
     // The list of courses the student has registered for.
-    // It's actually a set of indices of the respective courses
+    // This is actually a set of indices of the respective courses
     // in the global list of courses.
     // So if a course is removed from the global list
     // then this list is invalidated and has to be cleared.
@@ -235,39 +235,17 @@ void CourseMenu()
     {
         PrintHeading("COURSE MENU");
         cout << "Commands:\n";
-        cout << "\t1 - View All Courses\n";
-        cout << "\t2 - Add New Course\n";
-        cout << "\t3 - Edit Course\n";
-        cout << "\t4 - Delete Course\n";
-        cout << "\t5 - Clear All Courses\n";
+        cout << "\t1 - Add New Course\n";
+        cout << "\t2 - Edit Course\n";
+        cout << "\t3 - Delete Course\n";
         cout << "\t0 - Go Back\n\n";
 
         Course c;
         int index;
-        int cmd = GetCommand(0, 5);
+        int cmd = GetCommand(0, 3);
         switch (cmd)
         {
-        case 1: // View all courses
-        {
-            int n = courses.size();
-            if (n == 0)
-            {
-                cout << "No courses have been registered.\n";
-            }
-            else
-            {
-                printf("Number of courses: %i\n", n);
-                for (int i = 0; i < n; i++)
-                { // Print each course one by one
-                    Course c = courses[i];
-                    printf("%i. %s\n", i + 1, c.ToString());
-                }
-                cout << endl;
-                system("pause");
-            }
-            break;
-        }
-        case 2: // Add New Course
+        case 1: // Add New Course
             cout << "Course Code: ";
             getline(cin, c.code);
             cout << "Course Title: ";
@@ -281,8 +259,8 @@ void CourseMenu()
             }
             break;
 
-        case 3: // Edit Course
-            if (AskForCourseCode(&c, &index))
+        case 2: // Edit Course
+            if (AskForCourseCode(&c, &index)) // If the user entered a valid course code...
             {
                 bool changed = false;
                 printf("Editing '%s':\n", c.ToString());
@@ -328,7 +306,7 @@ void CourseMenu()
             }
             break;
 
-        case 4: // Delete course
+        case 3: // Delete course
             if (AskForCourseCode(&c, &index))
             {
                 cout << "WARNING: If you delete a course you will have to re-register the courses of all students!\n";
@@ -337,26 +315,13 @@ void CourseMenu()
                 {
                     courses.erase(courses.begin() + index);
                     // Unregister the courses of all students
-                    // Go to Student.h (line 16) for the reason
+                    // Go to line 39 for the reason
                     for (int i = 0; i < (int)students.size(); i++)
                     {
                         students[i].courses.clear();
                     }
                     cout << "Course deleted.\n";
                 }
-            }
-            break;
-
-        case 5: // Clear all courses
-            if (ConfirmAction("Are you sure you want to clear all courses?"))
-            {
-                courses.clear();
-                // Unregister the courses of all students
-                for (int i = 0; i < (int)students.size(); i++)
-                {
-                    students[i].courses.clear();
-                }
-                cout << "All courses cleared.\n";
             }
             break;
 
@@ -382,12 +347,14 @@ bool AskForStudentID(Student *s, int *index = nullptr)
             *s = students[i];
             if (index != nullptr)
                 *index = i;
+
             return true;
         }
     }
     cout << "Student not found.\n";
     if (index != nullptr)
         *index = -1;
+
     return false;
 }
 
@@ -419,73 +386,21 @@ void StudentMenu()
     { // Keep looping until the user enters 0 to go back
         PrintHeading("STUDENT MENU");
         cout << "Commands:\n";
-        cout << "\t1 - View All Students\n";
-        cout << "\t2 - View Student Details\n";
-        cout << "\t3 - Register New Student\n";
-        cout << "\t4 - Edit Student Details\n";
-        cout << "\t5 - Add Courses\n";
-        cout << "\t6 - Remove Courses\n";
-        cout << "\t7 - Record Grades\n";
-        cout << "\t8 - View Academic Record\n";
-        cout << "\t9 - Unregister Student\n"
-             << "      ";
-        cout << " 10 - Clear All Students\n";
+        cout << "\t1 - Register New Student\n";
+        cout << "\t2 - Edit Student Details\n";
+        cout << "\t3 - Add Courses\n";
+        cout << "\t4 - Remove Courses\n";
+        cout << "\t5 - Record Grades\n";
+        cout << "\t6 - View Academic Record\n";
+        cout << "\t7 - Unregister Student\n";
         cout << "\t0 - Go Back\n\n";
 
         Student s;
         int index;
-        int cmd = GetCommand(0, 10);
+        int cmd = GetCommand(0, 7);
         switch (cmd)
         {
-        case 1: // View all students
-        {
-            int n = students.size();
-            if (n == 0)
-            {
-                cout << "No students have been registered.\n";
-            }
-            else
-            {
-                printf("Number of students: %i\n", n);
-                for (int i = 0; i < n; i++) // Print all students one by one
-                {
-                    s = students[i];
-                    printf("%i. %s\n", i + 1, s.ToString());
-                }
-                cout << endl;
-                system("pause");
-            }
-            break;
-        }
-
-        case 2: // View student details
-        {
-            if (AskForStudentID(&s))
-            {
-                cout << "Name: " << s.name << endl;
-                cout << "Age: " << s.age << endl;
-                cout << "Gender: " << (s.isMale ? "Male" : "Female") << endl;
-                cout << "Level: " << s.level << endl;
-
-                int n = s.courses.size();
-                if (n == 0)
-                    cout << "This student has not registered for any courses.\n";
-                else
-                { // Print the courses the student has registered for
-                    cout << "Number of courses registered: " << n << endl;
-                    for (int i = 0; i < n; i++)
-                    {
-                        Course c = courses[s.courses[i]];
-                        printf("%i. %s\n", i + 1, c.ToString());
-                    }
-                    cout << endl;
-                    system("pause");
-                }
-            }
-            break;
-        }
-
-        case 3: // Register new student
+        case 1: // Register new student
         {
             askForNum(s.ID, "Student ID: ");
             cout << "Name: ";
@@ -505,9 +420,9 @@ void StudentMenu()
             break;
         }
 
-        case 4: // Edit Student details
+        case 2: // Edit Student details
         {
-            if (AskForStudentID(&s, &index))
+            if (AskForStudentID(&s, &index)) // If the user entered a valid ID...
             {
                 bool changed = false;
                 printf("Editing Student '%s':\n", s.ToString());
@@ -581,7 +496,7 @@ void StudentMenu()
             break;
         }
 
-        case 5: // Register for courses
+        case 3: // Register for courses
         {
             int sIndex;
             if (AskForStudentID(&s, &sIndex))
@@ -635,7 +550,7 @@ void StudentMenu()
             break;
         }
 
-        case 6: // Cancel courses
+        case 4: // Cancel courses
         {
             int sIndex;
             if (AskForStudentID(&s, &sIndex))
@@ -670,7 +585,7 @@ void StudentMenu()
             break;
         }
 
-        case 7: // Record Grades
+        case 5: // Record Grades
         {
             if (AskForStudentID(&s, &index))
             {
@@ -719,7 +634,7 @@ void StudentMenu()
             break;
         }
 
-        case 8: // View Academic Record
+        case 6: // View Academic Record
         {
             if (AskForStudentID(&s))
             {
@@ -776,7 +691,7 @@ void StudentMenu()
             }
             break;
         }
-        case 9: // Unregister student
+        case 7: // Unregister student
         {
             if (AskForStudentID(&s, &index))
             {
@@ -789,14 +704,7 @@ void StudentMenu()
             }
             break;
         }
-        case 10: // Clear all students
-            if (ConfirmAction("Are you sure you want to clear all students?"))
-            {
-                students.clear();
-                cout << "All students cleared.\n";
-            }
-            break;
-
+    
         default: // Go Back
             return;
         }
@@ -833,55 +741,17 @@ void StaffMenu()
     {
         PrintHeading("STAFF MENU");
         cout << "Commands:\n";
-        cout << "\t1 - View All Staff\n";
-        cout << "\t2 - View Staff Details\n";
-        cout << "\t3 - Register New Staff\n";
-        cout << "\t4 - Edit Staff Details\n";
-        cout << "\t5 - Unregister Staff\n";
-        cout << "\t6 - Clear All Staff\n";
+        cout << "\t1 - Register New Staff\n";
+        cout << "\t2 - Edit Staff Details\n";
+        cout << "\t3 - Unregister Staff\n";
         cout << "\t0 - Go Back\n\n";
 
         Staff s;
         int index;
-        int cmd = GetCommand(0, 6);
+        int cmd = GetCommand(0, 3);
         switch (cmd)
         {
-        case 1: // View all staff
-        {
-            int n = staff.size();
-            if (n == 0)
-            {
-                cout << "No staff have been registered.\n";
-            }
-            else
-            {
-                printf("Number of staff: %i\n", n);
-                for (int i = 0; i < n; i++)
-                { // Print each of the staff one by one
-                    s = staff[i];
-                    printf("%i. %s\n", i + 1, s.ToString());
-                }
-                cout << endl;
-                system("pause");
-            }
-            break;
-        }
-
-        case 2: // View staff details
-        {
-            if (AskForStaffID(&s))
-            {
-                cout << "Name: " << s.name << endl;
-                cout << "Age: " << s.age << endl;
-                cout << "Gender: " << (s.isMale ? "Male" : "Female") << endl;
-                cout << "Job Title: " << s.jobTitle << endl;
-                cout << endl;
-                system("pause");
-            }
-            break;
-        }
-
-        case 3: // Register new staff
+        case 1: // Register new staff
         {
             askForNum(s.ID, "Staff ID: ");
             cout << "Name: ";
@@ -902,9 +772,9 @@ void StaffMenu()
             break;
         }
 
-        case 4: // Edit Staff details
+        case 2: // Edit Staff details
         {
-            if (AskForStaffID(&s, &index))
+            if (AskForStaffID(&s, &index)) // If the user entered a valid ID...
             {
                 bool changed = false;
                 printf("Editing Staff '%s':\n", s.ToString());
@@ -973,7 +843,7 @@ void StaffMenu()
             break;
         }
 
-        case 5: // Unregister staff
+        case 3: // Unregister staff
         {
             if (AskForStaffID(&s, &index))
             {
@@ -986,15 +856,6 @@ void StaffMenu()
             }
             break;
         }
-
-        case 6: // Clear all staff
-            if (ConfirmAction("Are you sure you want to clear all staff?"))
-            {
-                staff.clear();
-                cout << "All staff cleared.\n";
-            }
-
-            break;
 
         default: // Go Back
             return;
